@@ -8,7 +8,7 @@
     
     <meta name="description" content="...">
     
-    <link rel="preload" href="/assets/css/0.styles.8c9c6a10.css" as="style"><link rel="preload" href="/assets/js/app.a3023de5.js" as="script"><link rel="preload" href="/assets/js/2.5ae1ef98.js" as="script"><link rel="preload" href="/assets/js/1.227631fe.js" as="script"><link rel="preload" href="/assets/js/26.d3783d8c.js" as="script"><link rel="prefetch" href="/assets/js/10.0f6fa0c3.js"><link rel="prefetch" href="/assets/js/11.521e98b3.js"><link rel="prefetch" href="/assets/js/12.7f23f111.js"><link rel="prefetch" href="/assets/js/13.2d6fb907.js"><link rel="prefetch" href="/assets/js/14.4b418a80.js"><link rel="prefetch" href="/assets/js/15.2802d078.js"><link rel="prefetch" href="/assets/js/16.0274b27b.js"><link rel="prefetch" href="/assets/js/17.37d90695.js"><link rel="prefetch" href="/assets/js/18.7efbad74.js"><link rel="prefetch" href="/assets/js/19.d8afd0ae.js"><link rel="prefetch" href="/assets/js/20.10e47ab9.js"><link rel="prefetch" href="/assets/js/21.ec9701e9.js"><link rel="prefetch" href="/assets/js/22.9fa48a07.js"><link rel="prefetch" href="/assets/js/23.6bd91ff5.js"><link rel="prefetch" href="/assets/js/24.2678cc0f.js"><link rel="prefetch" href="/assets/js/25.c494bcc4.js"><link rel="prefetch" href="/assets/js/3.86ab0d70.js"><link rel="prefetch" href="/assets/js/4.184df7a2.js"><link rel="prefetch" href="/assets/js/5.337df2c6.js"><link rel="prefetch" href="/assets/js/6.0c0a0f39.js"><link rel="prefetch" href="/assets/js/7.9e6be0eb.js"><link rel="prefetch" href="/assets/js/vendors~docsearch.e709020c.js">
+    <link rel="preload" href="/assets/css/0.styles.8c9c6a10.css" as="style"><link rel="preload" href="/assets/js/app.b442150d.js" as="script"><link rel="preload" href="/assets/js/2.ea280a12.js" as="script"><link rel="preload" href="/assets/js/1.014e652d.js" as="script"><link rel="preload" href="/assets/js/26.c385dcc2.js" as="script"><link rel="prefetch" href="/assets/js/10.2387ec2d.js"><link rel="prefetch" href="/assets/js/11.e0282316.js"><link rel="prefetch" href="/assets/js/12.ac3a72e2.js"><link rel="prefetch" href="/assets/js/13.74699b57.js"><link rel="prefetch" href="/assets/js/14.33b87d48.js"><link rel="prefetch" href="/assets/js/15.daaf4f73.js"><link rel="prefetch" href="/assets/js/16.845a9791.js"><link rel="prefetch" href="/assets/js/17.dae80764.js"><link rel="prefetch" href="/assets/js/18.7efbad74.js"><link rel="prefetch" href="/assets/js/19.a45744ea.js"><link rel="prefetch" href="/assets/js/20.c22d9498.js"><link rel="prefetch" href="/assets/js/21.9fb7922e.js"><link rel="prefetch" href="/assets/js/22.9cf64ca0.js"><link rel="prefetch" href="/assets/js/23.a4f6118e.js"><link rel="prefetch" href="/assets/js/24.54d36bba.js"><link rel="prefetch" href="/assets/js/25.cbc61d26.js"><link rel="prefetch" href="/assets/js/3.49af8c7d.js"><link rel="prefetch" href="/assets/js/4.184df7a2.js"><link rel="prefetch" href="/assets/js/5.61167063.js"><link rel="prefetch" href="/assets/js/6.4910e764.js"><link rel="prefetch" href="/assets/js/7.21915b67.js"><link rel="prefetch" href="/assets/js/vendors~docsearch.e709020c.js">
     <link rel="stylesheet" href="/assets/css/0.styles.8c9c6a10.css">
   </head>
   <body>
@@ -32,8 +32,8 @@ linux 系统会自动识别一些设备，例如U盘、光驱等等，当识别�
 系统提供该目录是为了让用户临时挂载别的文件系统的，我们可以将光驱挂载在 /mnt/ 上，然后进入该目录就可以查看光驱里的内容了。</p></li> <li><p><strong>/opt</strong>：
 opt 是 optional(可选) 的缩写，这是给主机额外安装软件所摆放的目录。比如你安装一个ORACLE数据库则就可以放到这个目录下。默认是空的。</p></li> <li><p><strong>/proc</strong>：
 proc 是 Processes(进程) 的缩写，/proc 是一种伪文件系统（也即虚拟文件系统），存储的是当前内核运行状态的一系列特殊文件，这个目录是一个虚拟的目录，它是系统内存的映射，我们可以通过直接访问这个目录来获取系统信息。
-这个目录的内容不在硬盘上而是在内存里，我们也可以直接修改里面的某些文件，比如可以通过下面的命令来屏蔽主机的ping命令，使别人无法ping你的机器：</p> <div class="language- extra-class"><pre class="language-text"><code>echo 1 &gt; /proc/sys/net/ipv4/icmp_echo_ignore_all
-</code></pre></div></li> <li><p><strong>/root</strong>：
+这个目录的内容不在硬盘上而是在内存里，我们也可以直接修改里面的某些文件，比如可以通过下面的命令来屏蔽主机的ping命令，使别人无法ping你的机器：</p> <div class="language- line-numbers-mode"><pre class="language-text"><code>echo 1 &gt; /proc/sys/net/ipv4/icmp_echo_ignore_all
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div></li> <li><p><strong>/root</strong>：
 该目录为系统管理员，也称作超级权限者的用户主目录。</p></li> <li><p><strong>/sbin</strong>：
 s 就是 Super User 的意思，是 Superuser Binaries (超级用户的二进制文件) 的缩写，这里存放的是系统管理员使用的系统管理程序。</p></li> <li><p><strong>/selinux</strong>：
 这个目录是 Redhat/CentOS 所特有的目录，Selinux 是一个安全机制，类似于 windows 的防火墙，但是这套机制比较复杂，这个目录就是存放selinux相关的文件的。</p></li> <li><p><strong>/srv</strong>：
@@ -83,6 +83,6 @@ DNS：域名解析器
       </a>
       →
     </span></p></div> </main></div><div class="global-ui"></div></div>
-    <script src="/assets/js/app.a3023de5.js" defer></script><script src="/assets/js/2.5ae1ef98.js" defer></script><script src="/assets/js/1.227631fe.js" defer></script><script src="/assets/js/26.d3783d8c.js" defer></script>
+    <script src="/assets/js/app.b442150d.js" defer></script><script src="/assets/js/2.ea280a12.js" defer></script><script src="/assets/js/1.014e652d.js" defer></script><script src="/assets/js/26.c385dcc2.js" defer></script>
   </body>
 </html>
