@@ -1,0 +1,1 @@
+import{H as e}from"./chunks/theme.CBf4uGLU.js";import{Q as t,j as a,o}from"./chunks/framework.BPKcPtvA.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{"layout":"page"},"headers":[],"relativePath":"index.md","filePath":"index.md"}'),r={name:"index.md"},_=Object.assign(r,{setup(n){return(s,c)=>(t(),a("div",null,[o(e)]))}});export{m as __pageData,_ as default};
