@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" width="960" height="460" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif">
+  <defs>
+    <style>
+      .h{font-size:21px;font-weight:700;fill:#0F172A}
+      .sub{font-size:12px;fill:#64748B}
+      .card{fill:#FFFFFF;stroke:#E2E8F0;stroke-width:1.5}
+      .tt{font-size:14px;font-weight:700;fill:#0F172A}
+      .cell{font-size:12px;fill:#334155}
+      .mono{font-family:Consolas,'Liberation Mono',monospace;font-size:11px;fill:#334155}
+      .term{font-family:Consolas,'Liberation Mono',monospace;font-size:11px;fill:#E2E8F0}
+      .dim{font-size:11px;fill:#94A3B8}
+      .bad{font-size:15px;font-weight:700;fill:#B91C1C}
+      .good{font-size:15px;font-weight:700;fill:#15803D}
+      .why{font-size:12px;font-weight:700;fill:#4F46E5}
+      .whyd{font-size:11px;fill:#475569}
+    </style>
+  </defs>
+  <rect width="960" height="460" fill="#F8FAFC"/>
+  <text x="32" y="40" class="h">为什么消费端要判重</text>
+  <text x="32" y="62" class="sub">同一个 eventId 重放 3 次，看库存到底变几次</text>
+  <text x="928" y="40" text-anchor="end" class="sub">效果示意 · 非实拍</text>
+
+  <rect x="32" y="86" width="440" height="248" rx="10" class="card"/>
+  <text x="48" y="112" class="tt">重放同一个事件</text>
+  <rect x="48" y="126" width="408" height="188" rx="8" fill="#0F172A"/>
+  <text x="60" y="150" class="term">$ POST /orders/replay?eventId=3f8c2a   × 3</text>
+  <text x="60" y="178" class="term">[1] 事件 3f8c2a：产品 1 扣减 1，剩余 99</text>
+  <text x="60" y="204" class="term">[2] 事件 3f8c2a 已处理过，跳过</text>
+  <text x="60" y="230" class="term">[3] 事件 3f8c2a 已处理过，跳过</text>
+  <text x="60" y="264" fill="#86EFAC" class="term">→ 三条消息到达，只有一条真正改了库存</text>
+  <text x="60" y="292" class="dim">CAP 是「至少一次投递」，重复不是异常而是常态</text>
+
+  <rect x="488" y="86" width="440" height="116" rx="10" fill="#FEF2F2" stroke="#FECACA" stroke-width="1.5"/>
+  <text x="504" y="112" class="tt">没有判重时</text>
+  <text x="504" y="142" class="mono">100 → 99 → 98 → 97</text>
+  <text x="504" y="170" class="bad">扣了 3 次，库存错了 2 个</text>
+
+  <rect x="488" y="214" width="440" height="120" rx="10" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.5"/>
+  <text x="504" y="240" class="tt">加了唯一键 + 本地事务之后</text>
+  <text x="504" y="270" class="mono">100 → 99 → 99 → 99</text>
+  <text x="504" y="298" class="good">只扣 1 次，结果与期望一致</text>
+
+  <rect x="32" y="346" width="440" height="98" rx="10" class="card"/>
+  <text x="48" y="372" class="tt">产品库里的 ProcessedEvents</text>
+  <text x="48" y="396" class="mono">EventId = 3f8c2a...   ConsumedAt = 14:02:31</text>
+  <text x="48" y="418" class="cell">只有 1 行；并发重复会撞唯一索引，CAP 重试后判重命中</text>
+  <text x="48" y="436" class="dim">「减库存」和「记 EventId」在同一事务，不会出现扣了却没记</text>
+
+  <rect x="488" y="346" width="440" height="98" rx="10" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="1.5"/>
+  <text x="504" y="372" class="why">为什么这样设计</text>
+  <text x="504" y="396" class="whyd">消息中间件只能保证「至少送到一次」，做不到「恰好一次」。业务侧自己记下已处理的 EventId，才能把重复投递变成无害操作。</text>
+  <text x="504" y="418" class="whyd">代价：判重表会一直增长，生产上要按时间清理；还得决定重试耗尽后的消息怎么人工处理。</text>
+</svg>

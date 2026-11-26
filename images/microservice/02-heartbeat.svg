@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="960" height="580" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif">
+  <defs>
+    <style>
+      .h{font-size:21px;font-weight:700;fill:#0F172A}
+      .sub{font-size:12px;fill:#64748B}
+      .card{fill:#FFFFFF;stroke:#E2E8F0;stroke-width:1.5}
+      .tt{font-size:13px;font-weight:600;fill:#0F172A}
+      .mono{font-family:Consolas,'Liberation Mono',monospace;font-size:11px;fill:#334155}
+      .cell{font-size:12px;fill:#334155}
+      .dim{font-size:11px;fill:#94A3B8}
+      .why{font-size:12px;font-weight:700;fill:#4F46E5}
+      .whyd{font-size:11px;fill:#475569}
+      .badge{font-size:11px;font-weight:600;fill:#FFFFFF}
+      .win{font-size:11px;font-weight:600;fill:#64748B}
+    </style>
+  </defs>
+  <rect width="960" height="580" fill="#F8FAFC"/>
+  <text x="32" y="40" class="h">心跳检测：注册了 ≠ 还活着</text>
+  <text x="32" y="62" class="sub">Consul 每 5 秒访问一次 /health，2xx 才算 passing；连续失败到阈值就摘除</text>
+  <text x="928" y="40" text-anchor="end" class="sub">效果示意 · 非实拍</text>
+
+  <rect x="32" y="86" width="440" height="348" rx="10" class="card"/>
+  <text x="48" y="112" class="tt">时间线上发生了什么</text>
+  <text x="48" y="136" class="dim">时刻</text>
+  <text x="112" y="136" class="dim">事件</text>
+  <text x="350" y="136" class="dim">Consul 里的状态</text>
+  <line x1="48" y1="144" x2="456" y2="144" stroke="#E2E8F0"/>
+
+  <text x="48" y="168" class="mono">0s</text>
+  <text x="112" y="168" class="cell">启动完成，向 Consul 注册</text>
+  <rect x="348" y="154" width="104" height="20" rx="10" fill="#16A34A"/>
+  <text x="400" y="168" text-anchor="middle" class="badge">passing</text>
+
+  <text x="48" y="208" class="mono">5s</text>
+  <text x="112" y="208" class="cell">GET /health 返回 200 ok</text>
+  <rect x="348" y="194" width="104" height="20" rx="10" fill="#16A34A"/>
+  <text x="400" y="208" text-anchor="middle" class="badge">passing</text>
+
+  <text x="48" y="248" class="mono">10s</text>
+  <text x="112" y="248" class="cell">进程被强杀 / 假死</text>
+  <rect x="348" y="234" width="104" height="20" rx="10" fill="#16A34A"/>
+  <text x="400" y="248" text-anchor="middle" class="badge">passing</text>
+  <text x="112" y="264" class="dim">下一次探测之前，Consul 还不知道</text>
+
+  <text x="48" y="296" class="mono">15s</text>
+  <text x="112" y="296" class="cell">心跳超时 3s，判定失败</text>
+  <rect x="348" y="282" width="104" height="20" rx="10" fill="#DC2626"/>
+  <text x="400" y="296" text-anchor="middle" class="badge">critical</text>
+
+  <text x="48" y="344" class="mono">20s</text>
+  <text x="112" y="344" class="cell">网关只取 passing 实例</text>
+  <rect x="348" y="330" width="104" height="20" rx="10" fill="#EA580C"/>
+  <text x="400" y="344" text-anchor="middle" class="badge">已摘除</text>
+  <text x="112" y="360" class="dim">流量不再转发到这台死实例</text>
+
+  <text x="48" y="400" class="mono">~75s</text>
+  <text x="112" y="400" class="cell">超过反注册时间，记录消失</text>
+  <rect x="348" y="386" width="104" height="20" rx="10" fill="#94A3B8"/>
+  <text x="400" y="400" text-anchor="middle" class="badge">已注销</text>
+
+  <rect x="488" y="86" width="440" height="348" rx="10" class="card"/>
+  <text x="504" y="112" class="tt">Consul UI 上看到的效果</text>
+
+  <rect x="504" y="126" width="408" height="92" rx="8" fill="#F1F5F9" stroke="#E2E8F0"/>
+  <text x="516" y="146" class="win">Services · 正常</text>
+  <circle cx="524" cy="169" r="5" fill="#16A34A"/>
+  <text x="536" y="173" class="mono">order-service</text>
+  <text x="760" y="173" text-anchor="end" class="mono">2 instances · 2 passing</text>
+  <circle cx="524" cy="192" r="5" fill="#16A34A"/>
+  <text x="536" y="196" class="mono">product-service</text>
+  <text x="760" y="196" text-anchor="end" class="mono">1 instance · 1 passing</text>
+
+  <rect x="504" y="230" width="408" height="92" rx="8" fill="#FEF2F2" stroke="#FECACA"/>
+  <text x="516" y="250" class="win">Services · 一台实例挂了</text>
+  <circle cx="524" cy="273" r="5" fill="#DC2626"/>
+  <text x="536" y="277" class="mono">order-service :8080</text>
+  <text x="760" y="277" text-anchor="end" class="mono">critical · 心跳超时</text>
+  <circle cx="524" cy="296" r="5" fill="#16A34A"/>
+  <text x="536" y="300" class="mono">order-service :5102</text>
+  <text x="760" y="300" text-anchor="end" class="mono">passing · 继续接流量</text>
+
+  <rect x="504" y="334" width="408" height="84" rx="8" fill="#F1F5F9" stroke="#E2E8F0"/>
+  <text x="516" y="354" class="win">Services · 正常退出 / 超时清理后</text>
+  <circle cx="524" cy="377" r="5" fill="#16A34A"/>
+  <text x="536" y="381" class="mono">order-service</text>
+  <text x="760" y="381" text-anchor="end" class="mono">1 instance · 1 passing</text>
+  <text x="516" y="404" class="dim">消失的那条不会再把请求引向死地址</text>
+
+  <rect x="32" y="450" width="896" height="112" rx="10" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="1.5"/>
+  <text x="48" y="476" class="why">为什么必须加这一段</text>
+  <text x="48" y="500" class="whyd">① 注册只是「登记地址」，Consul 不会自己感知进程死活。没有心跳，死实例会一直留在服务列表里。</text>
+  <text x="48" y="522" class="whyd">② 网关每次从 Consul 取 passing 实例，死实例不下线就会持续转发过去，客户端拿到 502 / 超时。</text>
+  <text x="48" y="544" class="whyd">③ /health 故意不查数据库：数据库抖动不该把还能服务的实例整台摘掉；就绪检查是另一件事。</text>
+  <text x="48" y="560" class="dim">取舍：探测越密故障发现越快，但网络抖动也越容易误判；这里 5s 探测 + 3s 超时 + 1 分钟兜底清理是演示值。</text>
+</svg>

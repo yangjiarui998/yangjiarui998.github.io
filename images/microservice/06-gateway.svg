@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" width="960" height="440" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif">
+  <defs>
+    <style>
+      .h{font-size:21px;font-weight:700;fill:#0F172A}
+      .sub{font-size:12px;fill:#64748B}
+      .card{fill:#FFFFFF;stroke:#E2E8F0;stroke-width:1.5}
+      .tt{font-size:13px;font-weight:700;fill:#0F172A}
+      .mono{font-family:Consolas,'Liberation Mono',monospace;font-size:11px;fill:#334155}
+      .term{font-family:Consolas,'Liberation Mono',monospace;font-size:11px;fill:#E2E8F0}
+      .ok{font-family:Consolas,'Liberation Mono',monospace;font-size:11px;fill:#86EFAC}
+      .warn{font-family:Consolas,'Liberation Mono',monospace;font-size:11px;fill:#FCD34D}
+      .cell{font-size:11px;fill:#475569}
+      .why{font-size:12px;font-weight:700;fill:#4F46E5}
+      .whyd{font-size:11px;fill:#475569}
+    </style>
+  </defs>
+  <rect width="960" height="440" fill="#F8FAFC"/>
+  <text x="32" y="40" class="h">网关替应用做的三件事</text>
+  <text x="32" y="62" class="sub">路由、限流、缓存都不在业务代码里；多实例轮询也是注册中心换来的</text>
+  <text x="928" y="40" text-anchor="end" class="sub">效果示意 · 非实拍</text>
+
+  <rect x="32" y="86" width="290" height="216" rx="10" class="card"/>
+  <text x="46" y="112" class="tt">① 多实例轮询</text>
+  <rect x="46" y="126" width="262" height="110" rx="8" fill="#0F172A"/>
+  <text x="56" y="146" class="term">$ curl :8080/orders  × 4</text>
+  <text x="56" y="168" class="ok">order.api:a1b2c3:8080</text>
+  <text x="56" y="186" class="ok">order.api:d4e5f6:8080</text>
+  <text x="56" y="204" class="ok">order.api:a1b2c3:8080</text>
+  <text x="56" y="222" class="ok">order.api:d4e5f6:8080</text>
+  <text x="46" y="256" class="cell">注册 ID 带机器名，两个容器是两条</text>
+  <text x="46" y="274" class="cell">独立记录；Ocelot 每请求取</text>
+  <text x="46" y="292" class="cell">passing 列表按 RoundRobin 转发。</text>
+
+  <rect x="336" y="86" width="290" height="216" rx="10" class="card"/>
+  <text x="350" y="112" class="tt">② 限流（1 秒 5 次）</text>
+  <rect x="350" y="126" width="262" height="110" rx="8" fill="#0F172A"/>
+  <text x="360" y="146" class="term">$ 1s 内连打 6 次 /orders</text>
+  <text x="360" y="168" class="ok">[1..5] 200 OK</text>
+  <text x="360" y="190" class="warn">[6]   429 too many requests</text>
+  <text x="360" y="218" class="term">X-Rate-Limit 响应头可见</text>
+  <text x="350" y="256" class="cell">服务自身不用数请求。演示里</text>
+  <text x="350" y="274" class="cell">ClientIdHeader 设成 Host，所有</text>
+  <text x="350" y="292" class="cell">客户端共用计数器，生产要改。</text>
+
+  <rect x="640" y="86" width="288" height="216" rx="10" class="card"/>
+  <text x="654" y="112" class="tt">③ 缓存（TTL 5 秒）</text>
+  <rect x="654" y="126" width="260" height="110" rx="8" fill="#0F172A"/>
+  <text x="664" y="146" class="term">$ GET /products/1  × 2</text>
+  <text x="664" y="168" class="ok">Time 14:02:01.123  Stock 99</text>
+  <text x="664" y="188" class="ok">Time 14:02:01.123  Stock 99</text>
+  <text x="664" y="212" class="term">5s 后 → Time 14:02:06.456</text>
+  <text x="654" y="256" class="cell">5 秒内返回内容完全一致，</text>
+  <text x="654" y="274" class="cell">说明第二次没有打到产品服务。</text>
+  <text x="654" y="292" class="cell">代价：库存变了读数可能旧 5 秒。</text>
+
+  <rect x="32" y="316" width="896" height="108" rx="10" fill="#EEF2FF" stroke="#C7D2FE" stroke-width="1.5"/>
+  <text x="48" y="342" class="why">为什么放在网关，以及代价</text>
+  <text x="48" y="366" class="whyd">这三件事都是「所有服务都要、但和业务逻辑无关」的横向关注点。放网关，业务服务就不用各自实现一遍，改阈值也不用重新发版。</text>
+  <text x="48" y="388" class="whyd">代价：网关成了单点与必经一跳，配置错误会一次性影响所有路由；进程内缓存和全局限流计数器在多网关实例下也不共享。</text>
+  <text x="48" y="410" class="whyd">停掉其中一个容器后，等心跳把状态刷成 critical，网关会自动只往剩下的实例转发——应用代码里没有任何一行在做这件事，这正是「把地址发现交给注册中心」换来的。</text>
+</svg>

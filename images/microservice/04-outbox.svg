@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="960" height="480" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif">
+  <defs>
+    <style>
+      .h{font-size:21px;font-weight:700;fill:#0F172A}
+      .sub{font-size:12px;fill:#64748B}
+      .tt{font-size:14px;font-weight:700;fill:#0F172A}
+      .cell{font-size:12px;fill:#334155}
+      .mono{font-family:Consolas,'Liberation Mono',monospace;font-size:11px;fill:#334155}
+      .dim{font-size:11px;fill:#94A3B8}
+      .bad{font-size:12px;font-weight:600;fill:#B91C1C}
+      .good{font-size:12px;font-weight:600;fill:#15803D}
+      .why{font-size:12px;font-weight:700;fill:#4F46E5}
+      .whyd{font-size:11px;fill:#475569}
+    </style>
+  </defs>
+  <rect width="960" height="480" fill="#F8FAFC"/>
+  <text x="32" y="40" class="h">为什么把「写订单」和「发消息」放进同一个事务</text>
+  <text x="32" y="62" class="sub">差别只在两步之间崩溃的那一个瞬间</text>
+  <text x="928" y="40" text-anchor="end" class="sub">效果示意 · 非实拍</text>
+
+  <rect x="32" y="86" width="424" height="244" rx="10" fill="#FEF2F2" stroke="#FECACA" stroke-width="1.5"/>
+  <text x="48" y="114" class="tt">不加事务：先写库，再单独发消息</text>
+  <text x="48" y="144" class="cell">① 订单行写入成功</text>
+  <text x="48" y="172" class="cell">② 进程恰好在这一刻崩溃</text>
+  <text x="48" y="200" class="cell">③ PublishAsync 从未执行</text>
+  <text x="48" y="228" class="bad">④ 订单存在，但没有任何人去扣库存</text>
+  <rect x="48" y="248" width="392" height="62" rx="8" fill="#FFFFFF" stroke="#FECACA"/>
+  <text x="60" y="270" class="mono">Orders        = 1 行</text>
+  <text x="60" y="292" class="mono">cap.published = 0 行  ← 消息彻底丢了</text>
+
+  <rect x="504" y="86" width="424" height="244" rx="10" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="1.5"/>
+  <text x="520" y="114" class="tt">加事务：消息也写进业务库</text>
+  <text x="520" y="144" class="cell">① BeginTransaction 开启本地事务</text>
+  <text x="520" y="172" class="cell">② 订单行 + cap.published 一起写入</text>
+  <text x="520" y="200" class="cell">③ 一次 Commit，两者同时生效</text>
+  <text x="520" y="228" class="good">④ CAP 后台补发；RabbitMQ 暂时挂了也不丢</text>
+  <rect x="520" y="248" width="392" height="62" rx="8" fill="#FFFFFF" stroke="#BBF7D0"/>
+  <text x="532" y="270" class="mono">Orders        = 1 行</text>
+  <text x="532" y="292" class="mono">cap.published = 1 行 · Succeeded</text>
+
+  <rect x="464" y="190" width="32" height="32" rx="16" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="480" y="211" text-anchor="middle" class="dim">VS</text>
+
+  <text x="32" y="358" class="tt">下单成功后，三处数据同时变化</text>
+  <rect x="32" y="372" width="288" height="60" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="46" y="394" class="mono">orderdb · Orders</text>
+  <text x="46" y="416" class="cell">新增 1 行订单，ProductId = 1</text>
+
+  <rect x="336" y="372" width="288" height="60" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="350" y="394" class="mono">orderdb · cap.published</text>
+  <text x="350" y="416" class="cell">新增 1 行消息，状态 Succeeded</text>
+
+  <rect x="640" y="372" width="288" height="60" rx="8" fill="#FFFFFF" stroke="#E2E8F0"/>
+  <text x="654" y="394" class="mono">RabbitMQ · product-api.v1</text>
+  <text x="654" y="416" class="cell">消息被消费，Ready 回到 0</text>
+
+  <rect x="32" y="444" width="896" height="28" rx="8" fill="#EEF2FF" stroke="#C7D2FE"/>
+  <text x="46" y="463" class="whyd"><tspan class="why">为什么：</tspan>跨服务的强一致事务代价很高，Outbox 用「业务库里多一张消息表」换来了不丢消息；代价是消息会稍晚送达，库存是最终一致。</text>
+</svg>
